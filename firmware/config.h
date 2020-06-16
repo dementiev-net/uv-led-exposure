@@ -1,21 +1,15 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-const uint8_t PinPres1 = A4;  // кнопки
-const uint8_t PinPres2 = A5;
-const uint8_t PinPres3 = A1;
-const uint8_t PinPres4 = A3;
-const uint8_t PinPres5 = A2;
-const uint8_t PinLcd1  = 12; // экран
-const uint8_t PinLcd2  = 11;
-const uint8_t PinLcd3  = 10;
-const uint8_t PinLcd4  = 9;
-const uint8_t PinLcd5  = 8;
-const uint8_t PinLcd6  = 7;
-const uint8_t PinMosf  = 13; // мосфет
-const uint8_t PinCLK   = 3;  // энкодер
-const uint8_t PinDT    = 2;
-const uint8_t PinSW    = A0;
-const uint8_t secStep  = 5;  // шаг энкодера (сек.)
+#define BTN_DEBOUNCE      20   // дребезг кнопок (мсек.)
+#define BTN_DCGAP         100  // время между двойным кликом (мсек.)
+#define BTN_HOLDTIME      1000 // время зажатия кнопки (мсек.)
+#define BTN_LONGHOLDTIME  3000 // время долгого нажатия кнопки  (мсек.)
+
+#define SEC_STEP          5    // шаг энкодера (сек.)
+
+#define BUZ_TONE          2000 // пищалка
+#define BUZ_TIME1         200
+#define BUZ_TIME2         500
 
 #endif

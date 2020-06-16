@@ -1,27 +1,32 @@
 #include "button.h"
+#include "config.h"
 
 BUTTON::BUTTON() { }
 
-int BUTTON::checkButton(int pin) {
+int BUTTON::checkButton(int pin)
+{
   int event = 0;
   buttonVal = digitalRead(pin);
-  // Button pressed down
-  if (buttonVal == HIGH && buttonLast == LOW && (millis() - upTime) > debounce) {
+  if (buttonVal == LOW && buttonLast == HIGH && (millis() - upTime) > BTN_DEBOUNCE) // кнопка нажата
+  {
     downTime = millis();
     ignoreUp = false;
     waitForUp = false;
     singleOK = true;
     holdEventPast = false;
     longHoldEventPast = false;
-    if ((millis() - upTime) < DCgap && DConUp == false && DCwaiting == true)  DConUp = true;
+    if ((millis() - upTime) < BTN_DCGAP && DConUp == false && DCwaiting == true)  DConUp = true;
     else  DConUp = false;
     DCwaiting = false;
-    // Button released
-  } else if (buttonVal == LOW && buttonLast == HIGH && (millis() - downTime) > debounce) {
-    if (not ignoreUp) {
+  }
+  else if (buttonVal == HIGH && buttonLast == LOW && (millis() - downTime) > BTN_DEBOUNCE) // кнопка отпущена
+  {
+    if (not ignoreUp)
+    {
       upTime = millis();
       if (DConUp == false) DCwaiting = true;
-      else{
+      else
+      {
         event = 2;
         DConUp = false;
         DCwaiting = false;
@@ -29,13 +34,15 @@ int BUTTON::checkButton(int pin) {
       }
     }
   }
-  if ( buttonVal == LOW && (millis() - upTime) >= DCgap && DCwaiting == true && DConUp == false && singleOK == true && event != 2) { // Test for normal click event: DCgap expired
+  if (buttonVal == HIGH && (millis() - upTime) >= BTN_DCGAP && DCwaiting == true && DConUp == false && singleOK == true && event != 2)
+  {
     event = 1;
     DCwaiting = false;
   }
-  // Test for hold
-  if (buttonVal == HIGH && (millis() - downTime) >= holdTime) {
-    if (not holdEventPast) { // Trigger "normal" hold
+  if (buttonVal == LOW && (millis() - downTime) >= BTN_HOLDTIME) // удержание кнопки
+  {
+    if (not holdEventPast) // тригер "нормального" удержания
+    {
       event = 3;
       waitForUp = true;
       ignoreUp = true;
@@ -44,13 +51,16 @@ int BUTTON::checkButton(int pin) {
       //downTime = millis();
       holdEventPast = true;
     }
-    if ((millis() - downTime) >= longHoldTime) { // Trigger "long" hold
-      if (not longHoldEventPast) {
+    if ((millis() - downTime) >= BTN_LONGHOLDTIME) // тригер "долгого" удержания
+    {
+      if (not longHoldEventPast)
+      {
         event = 4;
         longHoldEventPast = true;
       }
     }
   }
   buttonLast = buttonVal;
+
   return event;
 }
