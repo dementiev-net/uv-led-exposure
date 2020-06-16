@@ -18,7 +18,7 @@ void LCD::splashScreen() {
   display->setCursor(0, 0);
   display->print("  UV LED TIMER  ");
   display->setCursor(0, 1);
-  display->print("    ver. 2.1    ");
+  display->print("    ver. 3.0    ");
 }
 
 void LCD::updateScreen(Data1602* fullData) {

@@ -9,9 +9,9 @@
 
 // Button timing variables
 const int debounce = 20;            // Ms debounce period to prevent flickering when pressing or releasing the button
-const int DCgap = 250;              // Max ms between clicks for a double click event
-const int holdTime = 3000;          // Ms hold period: how long to wait for press+hold event
-const int longHoldTime = 6000;      // Ms long hold period: how long to wait for press+hold event
+const int DCgap = 100;              // Max ms between clicks for a double click event
+const int holdTime = 1000;          // Ms hold period: how long to wait for press+hold event
+const int longHoldTime = 3000;      // Ms long hold period: how long to wait for press+hold event
 
 class BUTTON {
   private:

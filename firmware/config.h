@@ -1,9 +1,11 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-const uint8_t PinPres1 = 6;  // кнопки
-const uint8_t PinPres2 = 5;
-const uint8_t PinPres3 = 4;
+const uint8_t PinPres1 = A4;  // кнопки
+const uint8_t PinPres2 = A5;
+const uint8_t PinPres3 = A1;
+const uint8_t PinPres4 = A3;
+const uint8_t PinPres5 = A2;
 const uint8_t PinLcd1  = 12; // экран
 const uint8_t PinLcd2  = 11;
 const uint8_t PinLcd3  = 10;

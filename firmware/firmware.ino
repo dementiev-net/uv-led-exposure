@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // LED засветка фоторезиста и паяльной маски
-// версия 2.1
+// версия 3.0 (Atmega328)
 // (c) 2019 Дмитрий Дементьев <info@phpscript.ru>
 // ----------------------------------------------------------------------------
 
@@ -19,9 +19,11 @@ Data1602  fullDataScreen;
 BUTTON    button1;
 BUTTON    button2;
 BUTTON    button3;
+BUTTON    button4;
+BUTTON    button5;
 
-int  Presets[]    = {0, 0, 0};
-int  PresetsBtn[] = {1, 2, 3};
+int  Presets[]    = {0, 0, 0, 0, 0};
+int  PresetsBtn[] = {1, 2, 3, 4, 5};
 unsigned long currentTime;   // текущее время
 unsigned long loopTime;      // время окончания
 unsigned long LimitTime = 0; // таймер
@@ -35,7 +37,9 @@ void setup() {
   Presets[0] = EEPROM.read(0); // берем пресеты из EEPROM
   Presets[1] = EEPROM.read(1);
   Presets[2] = EEPROM.read(2);
-  for (int i = 0; i < 2; i++) {
+  Presets[3] = EEPROM.read(3);
+  Presets[4] = EEPROM.read(4);
+  for (int i = 0; i < 4; i++) {
     if (Presets[i] < 0 || Presets[i] > 86400) Presets[i] = 0;
   }
   pinMode(PinCLK, INPUT); // входы
@@ -45,12 +49,14 @@ void setup() {
   pinMode(PinPres1, INPUT);
   pinMode(PinPres2, INPUT);
   pinMode(PinPres3, INPUT);
+  pinMode(PinPres4, INPUT);
+  pinMode(PinPres5, INPUT);
   pinMode(PinMosf, OUTPUT);
   attachInterrupt (0, isr, CHANGE); // прерывание энкодера
   currentTime = millis();
   lcd.init();
   lcd.splashScreen();
-  delay(3000);
+  delay(1000);
 }
 
 void loop() {
@@ -101,21 +107,25 @@ void loop() {
     int s = LimitTime % 60;
 
     sprintf(fullDataScreen.stroka1, "%s", "   Set timer:   ");
-    sprintf(fullDataScreen.stroka2, "    %02d:%02d:%02d", h, m, s);
+    sprintf(fullDataScreen.stroka2, "    %02d:%02d:%02d    ", h, m, s);
 
-    // пресетs №1,2,3
+    // пресетs №1,2,3,4,5
     int bReturn[10];
     bReturn[0] = button1.checkButton(PinPres1);
     bReturn[1] = button2.checkButton(PinPres2);
     bReturn[2] = button3.checkButton(PinPres3);
+    bReturn[3] = button4.checkButton(PinPres4);
+    bReturn[4] = button5.checkButton(PinPres5);
     checkButtonClick(bReturn);
 
     // энкодер
     if (turn) {
+      // Энкодеры бывают разных типов. Если при вращении вправо время уменьшается
+      // то здесь нужно поправить += на -= и наоборот
       if (up) {
-        LimitTime -= secStep;
-      } else {
         LimitTime += secStep;
+      } else {
+        LimitTime -= secStep;
       }
       turn = false;
       if (LimitTime < 0) LimitTime = 0;
@@ -141,9 +151,9 @@ void isr ()  {
    кнопка
 */
 void checkButtonClick (int bReturn[])  {
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 5; i++) {
     if (bReturn[i] == 1) { // нажатие на кнопку
-      sprintf(fullDataScreen.stroka2, "    preset #%d    ", i + 1);
+      sprintf(fullDataScreen.stroka2, "    preset #%d     ", i + 1);
       lcd.updateScreen(&fullDataScreen);
       LimitTime = Presets[i];
       delay(1000);
@@ -152,7 +162,7 @@ void checkButtonClick (int bReturn[])  {
     if (bReturn[i] == 3) { // удержание кнопки
       EEPROM.update(i, LimitTime);
       Presets[i] = LimitTime;
-      sprintf(fullDataScreen.stroka2, "    save #%d    ", i + 1);
+      sprintf(fullDataScreen.stroka2, "    save #%d      ", i + 1);
       lcd.updateScreen(&fullDataScreen);
       delay(1000);
     }
